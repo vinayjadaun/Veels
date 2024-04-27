@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { SafeAreaView, Text,View, StyleSheet } from "react-native";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
+import Constants from "expo-constants"
+import LoginScreen from './Apps/Screens/LoginScreen/LoginScreen'
+import { useFonts } from "expo-font";
+import appConfig from "./app.config";
+import HomeScreen from './Apps/Screens/HomeScreen/HomeScreen'
+import { NavigationContainer } from "@react-navigation/native";
+import TabNavigation from './Apps/Navigation/TabNavigation.js'
 
 export default function App() {
+
+    const[fontsLoaded,fontError]=useFonts({
+       'outfit-R':require('./assets/fonts/Outfit-Regular.ttf'),
+       'outfit-M':require('./assets/fonts/Outfit-Medium.ttf'),
+       'outfit-B':require('./assets/fonts/Outfit-Bold.ttf')
+    })
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ClerkProvider publishableKey={Constants.expoConfig.extra.clerkPublishableKey}>
+    <SafeAreaView style={{flex:1}}>
+       <SignedIn>
+             <NavigationContainer>
+              <TabNavigation/>
+             </NavigationContainer>
+       </SignedIn>
+       <SignedOut>
+             <LoginScreen/>
+        </SignedOut>
+    </SafeAreaView>
+  </ClerkProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
